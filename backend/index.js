@@ -92,6 +92,24 @@ app.post("/api/hotels", upload.single("image"), (req, res) => {
   res.status(201).json(newHotel);
 });
 
+
+// New: Hotel‑user login by email/password
+app.post("/api/hotels/login", express.json(), (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ error: "Email and password required" });
+  }
+  const hotels = loadHotels();
+  const hotel = hotels.find(
+    (h) => h.email === email && h.password === password
+  );
+  if (!hotel) {
+    return res.status(401).json({ error: "Invalid credentials" });
+  }
+  // success → send back hotelId (and anything else you might need)
+  res.json({ hotelId: hotel.hotelId });
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>
   console.log(`API listening on http://localhost:${PORT}`)
