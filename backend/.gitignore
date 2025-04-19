@@ -8,6 +8,10 @@
 # testing
 /coverage
 
+/hotels.json
+/uploads
+hotels.json
+
 # production
 /build
 
