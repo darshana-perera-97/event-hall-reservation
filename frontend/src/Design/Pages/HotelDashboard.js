@@ -56,21 +56,31 @@ export default function HotelDashboard() {
       <div className="row">
         {/* Hotel Details */}
         <div className="col-md-3 col-sm-6 mb-4">
-          <div className="card h-100 text-center">
-            <div className="card-body">
-              <h5 className="card-title">Hotel Details</h5>
-              <p className="card-text">View your hotel’s information</p>
+          <Link
+            to="/hotelDetails"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <div className="card h-100 text-center">
+              <div className="card-body">
+                <h5 className="card-title">Hotel Details</h5>
+                <p className="card-text">View your hotel’s information</p>
+              </div>
             </div>
-          </div>
+          </Link>
         </div>
         {/* Event Halls */}
         <div className="col-md-3 col-sm-6 mb-4">
-          <div className="card h-100 text-center">
-            <div className="card-body">
-              <h5 className="card-title">Event Halls</h5>
-              <p className="card-text">Manage your event halls</p>
+          <Link
+            to="/hotelHalls"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <div className="card h-100 text-center">
+              <div className="card-body">
+                <h5 className="card-title">Event Halls</h5>
+                <p className="card-text">Manage your event halls</p>
+              </div>
             </div>
-          </div>
+          </Link>
         </div>
         {/* Food Plates */}
         <div className="col-md-3 col-sm-6 mb-4">

@@ -92,7 +92,6 @@ app.post("/api/hotels", upload.single("image"), (req, res) => {
   res.status(201).json(newHotel);
 });
 
-
 // New: Hotel‑user login by email/password
 app.post("/api/hotels/login", express.json(), (req, res) => {
   const { email, password } = req.body;
@@ -109,6 +108,68 @@ app.post("/api/hotels/login", express.json(), (req, res) => {
   // success → send back hotelId (and anything else you might need)
   res.json({ hotelId: hotel.hotelId });
 });
+
+// GET a single hotel by hotelId
+app.get("/api/hotels/:hotelId", (req, res) => {
+  try {
+    const hotels = loadHotels();
+    const hotel = hotels.find((h) => h.hotelId === req.params.hotelId);
+    if (!hotel) {
+      return res.status(404).json({ error: "Hotel not found" });
+    }
+    res.json(hotel);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to read data" });
+  }
+});
+
+// near the top, after your existing multer/storage setup:
+const hallUpload = upload.single('image'); // reuse multer instance
+
+// GET all halls for a given hotel
+app.get('/api/hotels/:hotelId/halls', (req, res) => {
+  try {
+    const hotels = loadHotels();
+    const hotel = hotels.find(h => h.hotelId === req.params.hotelId);
+    if (!hotel) return res.status(404).json({ error: 'Hotel not found' });
+    res.json(hotel.halls || []);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to read data' });
+  }
+});
+
+// POST a new hall under a given hotel
+app.post(
+  '/api/hotels/:hotelId/halls',
+  hallUpload,
+  (req, res) => {
+    const { hallName, description, price } = req.body;
+    if (!hallName || !description || !price || !req.file) {
+      return res.status(400).json({ error: 'Missing hall fields or image' });
+    }
+
+    const hotels = loadHotels();
+    const hotel = hotels.find(h => h.hotelId === req.params.hotelId);
+    if (!hotel) {
+      return res.status(404).json({ error: 'Hotel not found' });
+    }
+
+    const newHall = {
+      hallid:      uuidv4(),
+      hallName,
+      description,
+      price:       parseFloat(price),
+      imageUrl:    `/uploads/${req.file.filename}`
+    };
+
+    hotel.halls = hotel.halls || [];
+    hotel.halls.push(newHall);
+    saveHotels(hotels);
+
+    res.status(201).json(newHall);
+  }
+);
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>
